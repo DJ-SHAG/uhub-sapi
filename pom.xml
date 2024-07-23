@@ -73,9 +73,9 @@
 			<classifier>mule-plugin</classifier>
 		</dependency>
 		<dependency>
-			<groupId>com.mycompany</groupId>
+			<groupId>com.oracle</groupId>
 			<artifactId>ojdbc6</artifactId>
-			<version>0.1</version>
+			<version>1.0</version>
 		</dependency>
 	</dependencies>
 
