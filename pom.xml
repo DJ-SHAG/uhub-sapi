@@ -30,12 +30,14 @@
 				<version>${mule.maven.plugin.version}</version>
 				<extensions>true</extensions>
 				<configuration>
+					<--
 					<sharedLibraries>
 						<sharedLibrary>
 							<groupId>com.mycompany</groupId>
 							<artifactId>ojdbc6</artifactId>
 						</sharedLibrary>
 					</sharedLibraries>
+					-->
 				</configuration>
 			</plugin>
 		</plugins>
@@ -73,10 +75,16 @@
 			<classifier>mule-plugin</classifier>
 		</dependency>
 		<dependency>
-    			<groupId>oracle</groupId>
-    			<artifactId>ojdbc6</artifactId>
-    			<version>11.2.0.3</version>
-    			</dependency>
+			<groupId>com.oracle</groupId>
+			<artifactId>ojdbc6</artifactId>
+			<version>1.0</version>
+		</dependency>
+<dependency>
+    <groupId>oracle</groupId>
+    <artifactId>ojdbc6</artifactId>
+    <version>11.2.0.3</version>
+    <scope>system</scope>
+</dependency>
 	</dependencies>
 
 	<repositories>
@@ -91,6 +99,12 @@
 			<name>MuleSoft Releases Repository</name>
 			<url>https://repository.mulesoft.org/releases/</url>
 			<layout>default</layout>
+		</repository>
+		<repository>
+			<id>abc-nexus-repo</id>
+			<name>abc nexus rep</name>
+			<url>http://localhost:8081/repository/abc-nexus-repo/</url>
+
 		</repository>
 	</repositories>
 
