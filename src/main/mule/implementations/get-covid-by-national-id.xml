@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<flow name="get:\(nationalID):uhub-sapi-raml_1-config">
+        <logger level="INFO" doc:name="Logger" doc:id="09090a67-72fd-4418-b75c-e7c6b8b56bed" message="flow started"/>
+		<ee:transform doc:name="Setting national id var">
+            <ee:variables>
+                <ee:set-variable variableName="nationalID">attributes.uriParams.'nationalID'</ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <flow-ref doc:name="Flow Reference" doc:id="96222e62-fcb5-4677-aaed-4104a84baf0a" name="get-covid-case-by-national-id-subflow"/>
+		<choice doc:name="Choice" doc:id="7d80c0be-8190-4b22-b1aa-78351336f200" >
+			<when expression="#[sizeOf(payload)&gt;0]">
+				<ee:transform doc:name="success response">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="Not found response" doc:id="15a73eac-3111-4105-b5bf-3b8ffd696fac" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"status" : 404,
+	"Message" : "No item found"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+		<logger level="INFO" doc:name="Logger" doc:id="ed16a847-a3f2-441b-9e26-fc87ca66d46e" />
+    
+</flow>
+	
+	
+	
+	</mule>

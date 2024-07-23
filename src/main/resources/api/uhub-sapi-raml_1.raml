@@ -1,0 +1,826 @@
+#%RAML 1.0
+title: uhub-sapi
+version: v1
+baseUri: http://{environment}/covid/{version}/
+baseUriParameters:
+  environment:
+    description: DEV , TEST , UAT , PROD
+    enum: ["uho-dev-uhub-sapi.us-e2.cloudhub.io","uho-test-uhub-sapi.us-e2.cloudhub.io","uho-uat-uhub-sapi.us-e2.cloudhub.io","uho-prod-uhub-sapi.us-e2.cloudhub.io"]
+/cases:
+  post:
+    description: This resource used to register a covid case.
+    headers:
+      x-correlation-id:
+        required: false
+        type: string
+        example: "7474774"
+      x-transaction-id:
+        required: false
+        type: string
+        example: "74a2d61f-a3cb-4b1b-9e97-767236ee0620" 
+    body:
+      application/json:
+        type: object
+        properties:
+          source: 
+            type: string
+            required: true
+            minLength: 1
+            maxLength: 60
+            example: "The johns hopkins hospital"
+          caseType: 
+            type: string
+            required: true
+            minLength: 1
+            maxLength: 20
+            example: "positive"
+          firstName: 
+            type: string
+            required: true
+            minLength: 1
+            maxLength: 30
+            example: "John"
+          lastName: 
+            type: string
+            required: true
+            minLength: 1
+            maxLength: 30
+            example: "Nixon"
+          phone: 
+            type: string
+            required: true
+            minLength: 1
+            maxLength: 15
+          email: 
+            type: string
+            required: false
+            minLength: 0
+            maxLength: 50
+            example: "john@gmail.com"
+          dateOfBirth:
+            type: date-only
+            required: true
+            example: "1989-04-26"
+          nationalID: 
+            type: string
+            required: true
+            minLength: 1
+            maxLength: 20
+            example: "209-49-6193"
+          nationalIDType:
+            type: string
+            required: true
+            minLength: 1
+            maxLength: 20
+            example: "SSN"
+          address:
+            type: object
+            properties:
+              streetAddress: 
+                type: string
+                required: true
+                minLength: 1
+                maxLength: 50
+                example: "1600 Pennsylvania Avenue NW"
+              city: 
+                type: string
+                required: true
+                minLength: 1
+                maxLength: 30
+                example: "Washington"
+              state: 
+                type: string
+                required: true
+                minLength: 1
+                maxLength: 30
+                example: "DC"
+              postal: 
+                type: string
+                required: true
+                minLength: 1
+                maxLength: 30
+                example: "20500"
+              country: 
+                type: string
+                required: true
+                minLength: 1
+                maxLength: 30
+                example: "USA"
+        example:
+          {
+            "source":"Hospital1",
+            "caseType":"positive",
+            "firstName":"John",
+            "lastName":"Nixon",
+            "phone":"541-754-3010",
+            "email":"john@gmail.com",
+            "dateOfBirth":"1989-04-26",
+            "nationalID":"209-49-6193",
+            "nationalIDType":"SSN",
+            "address":{
+                  "streetAddress":"1600 Pennsylvania Avenue NW",
+                  "city":"Dallas",
+                  "state":"TX",
+                  "postal":"20500",
+                  "country":"USA"
+              }
+      }
+    responses:
+        200:
+           body:
+              application/json:
+                  type: object
+                  properties:
+                    caseID: 
+                      type: string      
+                      example: "38774"
+                  example:
+                    {
+                      "caseID":"672322"
+                    }
+
+        400:
+          body:
+            application/json:
+              type: object
+              properties:
+                code:
+                  type: integer
+                  example: 400
+                  required: true 
+                message:
+                  example: Bad Request
+                  type: string
+                  required: true
+                description:
+                  example: field validation doesn't meet 
+                  type: string
+                  required: false
+                dateTime:
+                  example: 2021-05-29T05:58:02Z
+                  type: datetime
+                  required: true
+                transactionId:
+                  example: 44b32520-61ee-47b4-907d-fa15869f3c4d
+                  type: string
+                  required: true
+              example:
+                    {
+                      "code":400,
+                      "message":"Bad request",
+                      "description":"required key caseType not found",
+                      "dateTime":"2021-05-29T05:58:02Z",
+                      "transactionId":"44b32520-61ee-47b4-907d-fa15869f3c4d"
+                    }
+        503:
+          body:
+            application/json:
+              type: object
+              properties:
+                code:
+                  type: integer
+                  example: 503
+                  required: true 
+                message:
+                  example: Service unavailable
+                  type: string
+                  required: true
+                description:
+                  example: The (upstream) service is temporarily   not available
+                  type: string
+                  required: false
+                dateTime:
+                  example: 2021-05-31T06:18:02Z
+                  type: datetime
+                  required: true
+                transactionId:
+                  example: 48n32920-69ne-47b4-907d-fa15869f3c4d
+                  type: string
+                  required: true
+              example:
+                    {
+                      "code":503,
+                      "message":"Service unavailable",
+                      "description":"The (upstream) service is temporarily   not available",
+                      "dateTime":"2021-05-31T06:18:02Z",
+                      "transactionId":"48n32920-69ne-47b4-907d-fa15869f3c4d"
+                    }
+        500:
+          body:
+            application/json:
+              type: object
+              properties:
+                code:
+                  type: integer
+                  example: 500
+                  required: true 
+                message:
+                  example: Internal server error
+                  type: string
+                  required: true
+                description:
+                  example: The server encountered an unexpected condition which prevented it from fulfilling the request
+                  type: string
+                  required: false
+                dateTime:
+                  example: 2021-05-31T06:18:02Z
+                  type: datetime
+                  required: true
+                transactionId:
+                  example: 48n32920-69ne-47b4-907d-fa15869f3c4d
+                  type: string
+                  required: true
+              example:
+                    {
+                      "code":500,
+                      "message":"Internal server error",
+                      "description":"The server encountered an unexpected condition which prevented it from fulfilling the request",
+                      "dateTime":"2021-05-31T06:18:02Z",
+                      "transactionId":"48n32920-69ne-47b4-907d-fa15869f3c4d"
+                    }
+  put:
+    description: This resource used to update a covid case.
+    body:
+      application/xml:
+        type: object
+        xml:
+          name: covidCase
+        properties:
+              caseID: 
+                type: string
+                required: true
+                example: "3544"
+              source: 
+                type: string
+                required: true
+                minLength: 1
+                maxLength: 60
+                example: "The johns hopkins hospital"
+              caseType: 
+                type: string
+                required: true
+                minLength: 1
+                maxLength: 20
+                example: "positive"
+              firstName: 
+                type: string
+                required: true
+                minLength: 1
+                maxLength: 20
+                example: "John"
+              lastName: 
+                type: string
+                required: true
+                minLength: 1
+                maxLength: 20
+                example: "Nixon"
+              phone: 
+                type: string
+                required: true
+                minLength: 1
+                maxLength: 12
+              email: 
+                type: string
+                required: false
+                minLength: 0
+                maxLength: 50
+                example: "john@gmail.com"
+              dateOfBirth:
+                type: date-only
+                required: true
+                example: "1989-04-26"
+              nationalID: 
+                type: string
+                required: true
+                minLength: 1
+                maxLength: 20
+                example: "209-49-6193"
+              nationalIDType:
+                type: string
+                required: true
+                minLength: 1
+                maxLength: 20
+                example: "SSN"
+              address:
+                type: object
+                properties:
+                  streetAddress: 
+                    type: string
+                    required: true
+                    minLength: 1
+                    maxLength: 30
+                    example: "1600 Pennsylvania Avenue NW"
+                  city: 
+                    type: string
+                    required: true
+                    minLength: 1
+                    maxLength: 30
+                    example: "Washington"
+                  state: 
+                    type: string
+                    required: true
+                    minLength: 1
+                    maxLength: 30
+                    example: "DC"
+                  postal: 
+                    type: string
+                    required: true
+                    minLength: 1
+                    maxLength: 30
+                    example: "20500"
+                  country: 
+                    type: string
+                    required: true
+                    minLength: 1
+                    maxLength: 30
+                    example: "USA"
+        example:
+              <?xml version="1.0" encoding="UTF-8" ?>
+              <covidCase>
+                <caseID>7</caseID>
+                <source>Hospital1</source>
+                <caseType>vaccinated</caseType>
+                <firstName>John</firstName>
+                <lastName>Nixon</lastName>
+                <phone>541-754-3012</phone>
+                <email>john@gmail.com</email>
+                <dateOfBirth>1989-04-26</dateOfBirth>
+                <nationalID>209-49-6193</nationalID>
+                <nationalIDType>SSN</nationalIDType>
+                <address>
+                  <streetAddress>1600 Pennsylvania Avenue NW</streetAddress>
+                  <city>Washington</city>
+                  <state>DC</state>
+                  <postal>20500</postal>
+                  <country>USA</country>
+                </address>
+              </covidCase>
+    responses:
+      200:
+        body:
+          application/xml:
+            type: object
+            xml:
+              name: response
+            properties:
+                  caseID: 
+                    type: string
+                    required: true
+                    example: "3544"
+            example:
+                  <?xml version="1.0" encoding="UTF-8" ?>
+                  <response>
+                    <caseID>7</caseID>
+                  </response>
+      400:
+        body:
+          application/xml:
+            type: object
+            xml:
+              name: response
+            properties:
+                  code:
+                    type: integer
+                    example: 400
+                    required: true 
+                  message:
+                    example: Bad Request
+                    type: string
+                    required: true
+                  description:
+                    example: field validation doesn't meet 
+                    type: string
+                    required: false
+                  dateTime:
+                    example: 2021-05-29T05:58:02Z
+                    type: datetime
+                    required: true
+                  transactionId:
+                    example: 44b32520-61ee-47b4-907d-fa15869f3c4d
+                    type: string
+                    required: true
+            example:
+                  <?xml version="1.0" encoding="UTF-8" ?>
+                  <response>
+                    <code>400</code>
+                    <message>Bad request</message>
+                    <description>required key caseType not found</description>
+                    <dateTime>2021-05-29T05:58:02Z</dateTime>
+                    <transactionId>44b32520-61ee-47b4-907d-fa15869f3c4d</transactionId>
+                  </response>
+      503:
+        body:
+          application/xml:
+            type: object
+            xml:
+              name: response
+            properties:
+                  code:
+                    type: integer
+                    example: 503
+                    required: true 
+                  message:
+                    example: Service unavailable
+                    type: string
+                    required: true
+                  description:
+                    example: The (upstream) service is temporarily not available 
+                    type: string
+                    required: false
+                  dateTime:
+                    example: 2021-05-29T05:58:02Z
+                    type: datetime
+                    required: true
+                  transactionId:
+                    example: 44b32520-61ee-47b4-907d-fa15869f3c4d
+                    type: string
+                    required: true
+            example:
+              <?xml version="1.0" encoding="UTF-8" ?>
+                <response>
+                    <code>503</code>
+                    <message>Service unavailable</message>
+                    <description>The (upstream) service is temporarily not available</description>
+                    <dateTime>2021-05-29T05:58:02Z</dateTime>
+                    <transactionId>44b32520-61ee-47b4-907d-fa15869f3c4d</transactionId>
+                </response>
+      500:
+        body:
+          application/xml:
+            type: object
+            xml:
+              name: response
+            properties:
+                  code:
+                    type: integer
+                    example: 500
+                    required: true 
+                  message:
+                    example: Internal server error
+                    type: string
+                    required: true
+                  description:
+                    example: The server encountered an unexpected condition which prevented it from fulfilling the request 
+                    type: string
+                    required: false
+                  dateTime:
+                    example: 2021-05-29T05:58:02Z
+                    type: datetime
+                    required: true
+                  transactionId:
+                    example: 44b32520-61ee-47b4-907d-fa15869f3c4d
+                    type: string
+                    required: true
+            example:
+                  <?xml version="1.0" encoding="UTF-8" ?>
+                  <response>
+                    <code>500</code>
+                    <message>Internal server error</message>
+                    <description>The server encountered an unexpected condition which prevented it from fulfilling the request</description>
+                    <dateTime>2021-05-29T05:58:02Z</dateTime>
+                    <transactionId>44b32520-61ee-47b4-907d-fa15869f3c4d</transactionId>
+                  </response>
+/{nationalID}:
+    get:
+      description: To get covid cases by national id
+      headers:
+        x-correlation-id:
+          required: false
+          type: string
+          example: "7474774"
+        x-transaction-id:
+          required: false
+          type: string
+          example: "74a2d61f-a3cb-4b1b-9e97-767236ee0620" 
+      responses:
+        200:
+          body:
+            application/json:
+              type: array
+              items:
+                type: object
+                description: Contains each case object
+                properties:
+                  caseID:
+                    type: integer
+                    example: 3343
+                    required: true 
+                  source: 
+                    type: string
+                    required: true
+                    minLength: 1
+                    maxLength: 60
+                    example: "The johns hopkins hospital"
+                  caseType: 
+                    type: string
+                    required: true
+                    minLength: 1
+                    maxLength: 20
+                    example: "positive"
+                  firstName: 
+                    type: string
+                    required: true
+                    minLength: 1
+                    maxLength: 30
+                    example: "John"
+                  lastName: 
+                    type: string
+                    required: true
+                    minLength: 1
+                    maxLength: 30
+                    example: "Nixon"
+                  phone: 
+                    type: string
+                    required: true
+                    minLength: 1
+                    maxLength: 15
+                  email: 
+                    type: string
+                    required: false
+                    minLength: 0
+                    maxLength: 50
+                    example: "john@gmail.com"
+                  dateOfBirth:
+                    type: date-only
+                    required: true
+                    example: "1989-04-26"
+                  nationalID: 
+                    type: string
+                    required: true
+                    minLength: 1
+                    maxLength: 20
+                    example: "209-49-6193"
+                  nationalIDType:
+                    type: string
+                    required: true
+                    minLength: 1
+                    maxLength: 20
+                    example: "SSN"
+                  address:
+                    type: object
+                    properties:
+                      streetAddress: 
+                        type: string
+                        required: true
+                        minLength: 1
+                        maxLength: 50
+                        example: "1600 Pennsylvania Avenue NW"
+                      city: 
+                        type: string
+                        required: true
+                        minLength: 1
+                        maxLength: 30
+                        example: "Washington"
+                      state: 
+                        type: string
+                        required: true
+                        minLength: 1
+                        maxLength: 30
+                        example: "DC"
+                      postal: 
+                        type: string
+                        required: true
+                        minLength: 1
+                        maxLength: 30
+                        example: "20500"
+                      country: 
+                        type: string
+                        required: true
+                        minLength: 1
+                        maxLength: 30
+                        example: "USA"
+              example:
+                [
+                    {
+                        "source": "Hospital1",
+                        "caseID": 456464,
+                        "caseType": "positive",
+                        "firstName": "John",
+                        "lastName": "Nixon",
+                        "phone": "541-754-3010",
+                        "email": "john@gmail.com",
+                        "dateOfBirth": "1989-04-26",
+                        "nationalID": "209-49-6193",
+                        "nationalIDType": "SSN",
+                        "address": {
+                          "streetAddress": "1600 Pennsylvania Avenue NW",
+                          "city": "Washington",
+                          "state": "DC",
+                          "postal": "20500",
+                          "country": "USA"
+                        }
+                    },
+                    {
+                        "source": "Hospital1",
+                        "caseID": 528293,
+                        "caseType": "negative",
+                        "firstName": "John",
+                        "lastName": "Nixon",
+                        "phone": "541-754-3010",
+                        "email": "john@gmail.com",
+                        "dateOfBirth": "1989-04-26",
+                        "nationalID": "209-49-6193",
+                        "nationalIDType": "SSN",
+                        "address": {
+                          "streetAddress": "1600 Pennsylvania Avenue NW",
+                          "city": "Washington",
+                          "state": "DC",
+                          "postal": "20500",
+                          "country": "USA"
+                        }
+                    }
+                ]
+        503:
+          body:
+            application/json:
+              type: object
+              properties:
+                code:
+                  type: integer
+                  example: 503
+                  required: true 
+                message:
+                  example: Service unavailable
+                  type: string
+                  required: true
+                description:
+                  example: The (upstream) service is temporarily   not available
+                  type: string
+                  required: false
+                dateTime:
+                  example: 2021-05-31T06:18:02Z
+                  type: datetime
+                  required: true
+                transactionId:
+                  example: 48n32920-69ne-47b4-907d-fa15869f3c4d
+                  type: string
+                  required: true
+              example:
+                    {
+                      "code":503,
+                      "message":"Service unavailable",
+                      "description":"The (upstream) service is temporarily   not available",
+                      "dateTime":"2021-05-31T06:18:02Z",
+                      "transactionId":"48n32920-69ne-47b4-907d-fa15869f3c4d"
+                    }
+        500:
+          body:
+            application/json:
+              type: object
+              properties:
+                code:
+                  type: integer
+                  example: 500
+                  required: true 
+                message:
+                  example: Internal server error
+                  type: string
+                  required: true
+                description:
+                  example: The server encountered an unexpected condition which prevented it from fulfilling the request
+                  type: string
+                  required: false
+                dateTime:
+                  example: 2021-05-31T06:18:02Z
+                  type: datetime
+                  required: true
+                transactionId:
+                  example: 48n32920-69ne-47b4-907d-fa15869f3c4d
+                  type: string
+                  required: true
+              example:
+                    {
+                      "code":500,
+                      "message":"Internal server error",
+                      "description":"The server encountered an unexpected condition which prevented it from fulfilling the request",
+                      "dateTime":"2021-05-31T06:18:02Z",
+                      "transactionId":"48n32920-69ne-47b4-907d-fa15869f3c4d"
+                    }   
+/reports: 
+  description: To get reports by state wise and if state not provided all states reports responded
+  get:
+    headers:
+      x-correlation-id:
+        required: false
+        type: string
+        example: "7474774"
+      x-transaction-id:
+        required: false
+        type: string
+        example: "74a2d61f-a3cb-4b1b-9e97-767236ee0620" 
+    queryParameters:
+      state:
+        required: false
+        type: string
+        example: "TX"
+    responses:
+      200:
+        body:
+          application/json:
+            type: array
+            items:
+              type: object
+              properties:
+                state:
+                  type: string
+                  example: "texas"
+                report:
+                  type: object
+                  properties:
+                    total:
+                      type: number
+                      example: 46744
+                    positive:
+                      type: number
+                      example: 436744
+                    recovered:
+                      type: number
+                      example: 433744
+                    death:
+                      type: number
+                      example: 300
+                    vaccinated:
+                      type: number
+                      example: 7847848
+            example:
+              [
+                    {
+                        "state":"texas",
+                        "report":{
+                          "total":46744,
+                          "positive":436744,
+                          "recovered":433744,
+                          "death":300,
+                          "vaccinated":7847848
+                        }
+                    }
+              ]
+      503:
+          body:
+            application/json:
+              type: object
+              properties:
+                code:
+                  type: integer
+                  example: 503
+                  required: true 
+                message:
+                  example: Service unavailable
+                  type: string
+                  required: true
+                description:
+                  example: The (upstream) service is temporarily   not available
+                  type: string
+                  required: false
+                dateTime:
+                  example: 2021-05-31T06:18:02Z
+                  type: datetime
+                  required: true
+                transactionId:
+                  example: 48n32920-69ne-47b4-907d-fa15869f3c4d
+                  type: string
+                  required: true
+              example:
+                    {
+                      "code":503,
+                      "message":"Service unavailable",
+                      "description":"The (upstream) service is temporarily   not available",
+                      "dateTime":"2021-05-31T06:18:02Z",
+                      "transactionId":"48n32920-69ne-47b4-907d-fa15869f3c4d"
+                    }
+      500:
+          body:
+            application/json:
+              type: object
+              properties:
+                code:
+                  type: integer
+                  example: 500
+                  required: true 
+                message:
+                  example: Internal server error
+                  type: string
+                  required: true
+                description:
+                  example: The server encountered an unexpected condition which prevented it from fulfilling the request
+                  type: string
+                  required: false
+                dateTime:
+                  example: 2021-05-31T06:18:02Z
+                  type: datetime
+                  required: true
+                transactionId:
+                  example: 48n32920-69ne-47b4-907d-fa15869f3c4d
+                  type: string
+                  required: true
+              example:
+                    {
+                      "code":500,
+                      "message":"Internal server error",
+                      "description":"The server encountered an unexpected condition which prevented it from fulfilling the request",
+                      "dateTime":"2021-05-31T06:18:02Z",
+                      "transactionId":"48n32920-69ne-47b4-907d-fa15869f3c4d"
+                    }
+            
+        
+  

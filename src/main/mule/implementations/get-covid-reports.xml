@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	   <flow name="get:\reports:uhub-sapi-raml_1-config">
+        <!-- [STUDIO:"Transform Message"]<ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+&#45;&#45;-
+[
+  {
+    state: "texas",
+    report: {
+      total: 46744,
+      positive: 436744,
+      recovered: 433744,
+      death: 300,
+      vaccinated: 7847848
+    }
+  }
+&#93; as Array {encoding: "UTF-8", mediaType: "application/json"}&#93;&#93;></ee:set-payload>
+            </ee:message>
+        </ee:transform> [STUDIO] -->
+		<logger level="INFO" doc:name="Logger" doc:id="9c8fec7b-d2b3-48a9-82d8-311ce2853ae7" message="Starting log" />
+		<ee:transform doc:name="Transactionid &amp; corelationid" doc:id="7f626aea-7845-459e-8a89-39dfd4fe642c" >
+			<ee:message />
+			<ee:variables >
+				<ee:set-variable variableName="transactionid" ><![CDATA[%dw 2.0
+output application/java
+---
+attributes.headers.'x-transaction-id' default uuid()]]></ee:set-variable>
+				<ee:set-variable variableName="corelationid" ><![CDATA[%dw 2.0
+output application/java
+---
+attributes.headers.'x-corelation-id' default '1234']]></ee:set-variable>
+				<ee:set-variable variableName="DynamicQuery" ><![CDATA[
+if(!isEmpty(attributes.queryParams.state))
+( "select count(*) as Count , case_type , state from CVD_CASE_MASTER where upper(state) = '" ++ upper(attributes.queryParams.state) ++ "' group by case_type , state "
+)
+else
+(
+	"select count(*) as Count , case_type , state from CVD_CASE_MASTER group by case_type , state "
+)]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="Flow Reference" doc:id="5faf06ad-7be0-41f8-bfa2-996e8423a3fc" name="get-covid-reports-subflow1"/>
+		<ee:transform doc:name="Transform Message1" doc:id="460854c9-8b1b-421c-b1c9-8de608474ad8" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	case_count: payload01.count,
+	case_type: payload01.case_type,
+	state: payload01.state
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger1" doc:id="7baeab29-71a1-49cb-a505-19a99b925a0f" message="#[vars.DynamicQuery]" />
+    
+</flow>
+	
+	
+	</mule>

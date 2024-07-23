@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+
+	<sub-flow name="Insert-covid-case-subflow" doc:id="d2916e24-f417-41c0-a397-d5d909c3fc2b" >
+		<logger level="INFO" doc:name="Start Log" doc:id="4e988eb6-c393-4445-b7ea-4c1ea9d40727" message="Db insert is started"/>
+		<db:insert doc:name="Insert" doc:id="130261fd-8ee4-4bfa-9bc0-6243b6c39213" config-ref="Database_Config">
+			<db:sql><![CDATA[insert into CVD_CASE_MASTER  (source, 
+                 case_type, 
+                 first_name, 
+                 last_name, 
+                 phone, 
+                 email, 
+                 date_of_birth, 
+                 national_id, 
+                 national_id_type, 
+                 street_address, 
+                 city, 
+                 state, 
+                 postal, 
+                 country, 
+                 create_date, 
+                 update_date, 
+                 create_by, 
+                 update_by)
+values (:source,:case_type,:first_name,:last_name,:phone,:email,To_date(:date_of_birth,'YYYY-MM-DD'),:national_id,:national_id_type,
+:street_address,:city,:state,
+:postal,:country,To_date(:create_date,'YYYY-MM-DD'),To_date(:update_date,'YYYY-MM-DD') , :create_by,:update_by)
+
+
+
+
+]]></db:sql>
+			<db:input-parameters><![CDATA[#[payload]]]></db:input-parameters>
+			<db:auto-generated-keys-column-names />
+		</db:insert>
+		<logger level="INFO" doc:name="End Logger" doc:id="ed27215a-b77f-4155-b84b-3bc8cdd401b5" message="DB call ends"/>
+	</sub-flow>
+	<sub-flow name="Update-covid-case-subflow1" doc:id="850cb326-0a11-426a-ac1f-8e6cbfa3eb92" >
+		<logger level="INFO" doc:name="Start Log" doc:id="a27aa21f-1b3e-40c1-a1d6-29bf8962b676" message="Db insert is started" />
+		<db:update doc:name="Update covid case" doc:id="55503b31-860f-40d2-934d-13e51cedc8fa" config-ref="Database_Config">
+			<db:sql ><![CDATA[update CVD_CASE_MASTER  set source= :source , case_type= :case_type , first_name= :first_name, last_name = :last_name,
+phone = :phone ,  email= :email , date_of_birth = To_date(:date_of_birth, 'YYYY-MM-DD') , national_id = :national_id ,
+national_id_type= :national_id_type , street_address = :street_address , city = :city , state = :state,
+postal = :postal , country = :country , update_date = To_date(:update_date, 'YYYY-MM-DD') , update_by = :update_by
+where case_id = :case_id]]></db:sql>
+			<db:input-parameters ><![CDATA[#[payload]]]></db:input-parameters>
+		</db:update>
+		<logger level="INFO" doc:name="End Logger" doc:id="40635651-038f-4cce-853d-6d7cba0bf737" message="DB call ends" />
+	</sub-flow>
+	<sub-flow name="get-covid-case-by-national-id-subflow" doc:id="bf9b3f4f-a000-4396-8d6a-3913f15bb2ac" >
+		<logger level="INFO" doc:name="Start Log" doc:id="abc8ec70-b1d5-4ef8-b2ad-97a5bcd94846" message="Db insert is started" />
+		<db:select doc:name="Get data for national id" doc:id="6d01462f-c9b2-4032-9303-9e786a11a507" config-ref="Database_Config">
+			<db:sql ><![CDATA[select * from CVD_CASE_MASTER where national_id = :nid]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	nid: vars.nationalID
+}]]]></db:input-parameters>
+		</db:select>
+		<logger level="INFO" doc:name="End Logger" doc:id="b0976d1f-25d9-439c-ac5b-62593ad96a14" message="DB call ends" />
+	</sub-flow>
+	<sub-flow name="get-covid-reports-subflow1" doc:id="e893b2d5-1c13-4468-b19e-8bfca67d8f41" >
+		<logger level="INFO" doc:name="Start Log" doc:id="cf5afcc1-51e6-44ad-b0e3-00d369e4585c" message="Db insert is started" />
+		<db:select doc:name="Select" doc:id="e85bd260-615e-4ff3-bca7-433f194467cb" config-ref="Database_Config">
+			<db:sql><![CDATA[#["$(vars.DynamicQuery)"]]]></db:sql>
+		</db:select>
+		<logger level="INFO" doc:name="End Logger" doc:id="d75df5ee-4f8b-4262-9cd4-23eaca34d46f" message="DB call ends" />
+	</sub-flow>
+</mule>

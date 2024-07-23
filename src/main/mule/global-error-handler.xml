@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<error-handler name="Global_Error_Handler">
+            <on-error-propagate type="APIKIT:BAD_REQUEST">
+                <set-variable value="400" doc:name="Set code" doc:id="5fcd74ee-b89d-46e6-be8d-2c7224259478" variableName="httpStatus"/>
+			<set-variable value="Bad Request" doc:name="Set message" doc:id="ff6f034d-1b89-4783-8fb8-4eef793e20a9" variableName="message"/>
+			<set-variable value="#[error.description]" doc:name="Set errorDescription" doc:id="e0c233c5-b005-4246-84bd-5a3cfbecac09" variableName="errorDescription"/>
+			<flow-ref doc:name="Flow Reference" doc:id="f0c825e3-4c9f-43e9-bcd3-d08287b94e85" name="Sub_flow_for_mature_response"/>
+            
+</on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_FOUND">
+			<set-variable value="404" doc:name="Set code" doc:id="243d2ff0-b6a2-4b72-aa15-b2dba6429564" variableName="httpStatus" />
+			<set-variable value="Resource not found" doc:name="Set message" doc:id="b99ebcc7-d491-458d-a772-6e9aabcf17e7" variableName="message" />
+			<set-variable value="#[error.description]" doc:name="Set errorDescription" doc:id="836cd810-2b1c-40da-9acc-d59ebdc5a696" variableName="errorDescription" />
+			<flow-ref doc:name="Flow Reference" doc:id="7a8ed05f-8709-4125-9bbf-293bb30f3b19" name="Sub_flow_for_mature_response" />
+            
+</on-error-propagate>
+            <on-error-propagate type="APIKIT:METHOD_NOT_ALLOWED">
+			<set-variable value="405" doc:name="Set code" doc:id="328782b1-54ab-44ea-a9dd-b79e171d1a85" variableName="httpStatus" />
+			<set-variable value="Method not allowed" doc:name="Set message" doc:id="3c738f1c-c67c-4b9e-a742-bf0752fb3619" variableName="message" />
+			<set-variable value="#[error.description]" doc:name="Set errorDescription" doc:id="d6fa2639-2afe-4155-be23-a53f088a1f80" variableName="errorDescription" />
+			<flow-ref doc:name="Flow Reference" doc:id="89313f13-5247-4e5e-b2fc-4f8a53c7af36" name="Sub_flow_for_mature_response" />
+            
+</on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_ACCEPTABLE">
+			<set-variable value="406" doc:name="Set code" doc:id="eb1f174c-af08-4ac6-8731-ea8d0935b88d" variableName="httpStatus" />
+			<set-variable value="Not acceptable" doc:name="Set message" doc:id="68032be4-49b4-4231-8a4e-c1e16706bd26" variableName="message" />
+			<set-variable value="#[error.description]" doc:name="Set errorDescription" doc:id="d60074f9-986c-4e4d-b795-a0a9b0ba5c61" variableName="errorDescription" />
+			<flow-ref doc:name="Flow Reference" doc:id="29adb6dc-a982-4555-8b3f-629c4f755795" name="Sub_flow_for_mature_response" />
+            
+</on-error-propagate>
+            <on-error-propagate type="APIKIT:UNSUPPORTED_MEDIA_TYPE">
+			<set-variable value="415" doc:name="Set code" doc:id="40a03006-cc8f-4bfa-9a93-2ddd2e10c162" variableName="httpStatus" />
+			<set-variable value="Unsupported media type" doc:name="Set message" doc:id="0dafc3f2-27d5-42c2-a4bd-cb92033a791d" variableName="message" />
+			<set-variable value="#[error.description]" doc:name="Set errorDescription" doc:id="6abd6a7e-7359-41b7-9024-fff3d6ee02fd" variableName="errorDescription" />
+			<flow-ref doc:name="Flow Reference" doc:id="27605e79-23cd-4b58-8e76-99ddc7bfb20d" name="Sub_flow_for_mature_response" />
+            
+</on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_IMPLEMENTED">
+			<set-variable value="501" doc:name="Set code" doc:id="7a59c7ab-b712-4b63-83d3-08a08e16fb96" variableName="httpStatus" />
+			<set-variable value="Not Implemented" doc:name="Set message" doc:id="0fee5ffb-1b8f-4e71-889b-e36522bad7e3" variableName="message" />
+			<set-variable value="#[error.description]" doc:name="Set errorDescription" doc:id="1ae5bf2c-2974-4c12-abd6-56c34f22db84" variableName="errorDescription" />
+			<flow-ref doc:name="Flow Reference" doc:id="ceaeca68-1344-43b4-9df2-acef9d9975bc" name="Sub_flow_for_mature_response" />
+            
+</on-error-propagate>
+	<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="8792db69-8b26-4f2d-9b93-772d188bd1fe" type="DB:CONNECTIVITY">
+			<set-variable value="503" doc:name="Set code" doc:id="e8205d3c-c81f-4669-b211-6fdaf5146e21" variableName="httpStatus" />
+			<set-variable value="Service Unavailable" doc:name="Set message" doc:id="e0c5f2aa-b866-4e23-aff1-fb6cc9975bdc" variableName="message" />
+			<set-variable value="The (upstream) service is temporarily unavailable" doc:name="Set errorDescription" doc:id="a5bb2040-2e4c-464f-83b3-2c2ecfe8f9ed" variableName="errorDescription" />
+			<flow-ref doc:name="Flow Reference" doc:id="339c3392-b204-4674-a683-2be8800376a2" name="Sub_flow_for_mature_response" />
+		
+</on-error-propagate>
+	
+	
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="ad693eed-fc17-4ebd-9b4d-445e4c623ce5" type="ANY">
+			<set-variable value="500" doc:name="Set code" doc:id="2944c2d1-3e3f-4d92-bf18-fc27f7bd9b5d" variableName="httpStatus" />
+			<set-variable value="Internal Server Error" doc:name="Set message" doc:id="0bbc3cdf-0e6d-4e95-904c-6955ce7db940" variableName="message" />
+			<set-variable value="The internal server encounters unexpected condition which prevent it from fulfilling the request" doc:name="Set errorDescription" doc:id="8932fa11-2d10-43c8-927f-1c4e692ba499" variableName="errorDescription" />
+			<flow-ref doc:name="Flow Reference" doc:id="0dff0393-dee8-4b7d-b8ae-d758687d7b51" name="Sub_flow_for_mature_response" />
+			
+</on-error-propagate>
+		
+		
+</error-handler>
+	<sub-flow name="Sub_flow_for_mature_response" doc:id="950fc7a9-0f92-42a3-959a-08025553f5a6" >
+		<ee:transform doc:name="Transform Message" doc:id="12e01f36-69a3-49bc-b445-7b86ee671224" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="errorDescription" ><![CDATA[%dw 2.0
+output application/java
+---
+if(vars.errorDescription?)
+	vars.errorDescription
+else
+	error.exception.detailMessage]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<ee:transform doc:name="Transform Message" doc:id="d597f81b-53c2-4e02-9f47-1fa6e3ab67c3" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	code: vars.httpStatus,
+	"message": if(vars.message != null) vars.message else (error.errorType.identifier),
+	"description" : if(vars.errorDescription != null) vars.errorDescription else (error.description) ,
+	"dateTime" : now()  as String {format: "yyyy-MM-dd'T'HH:mm:ss'Z'"},
+	"transactionID": vars.transactionid
+	
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	
+	
+</mule>

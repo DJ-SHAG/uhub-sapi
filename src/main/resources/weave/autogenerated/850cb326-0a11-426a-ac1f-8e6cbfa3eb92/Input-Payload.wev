@@ -1,0 +1,23 @@
+%dw 2.0
+
+type auto_850cb326_0a11_426a_ac1f_8e6cbfa3eb92_Input_Payload = {|
+  source: Null, 
+  case_type: Null, 
+  first_name: Null, 
+  last_name: Null, 
+  phone: Null, 
+  email: Null, 
+  date_of_birth: String {"format": "yyyy-MM-dd"}, 
+  national_id: Null, 
+  street_address: Null, 
+  national_id_type: Null, 
+  city: Null, 
+  state: Null, 
+  postal: Null, 
+  country: Null, 
+  create_date: String {"format": "yyyy-MM-dd"}, 
+  update_date: String {"format": "yyyy-MM-dd"}, 
+  create_by: String, 
+  update_by: String
+|}
+
