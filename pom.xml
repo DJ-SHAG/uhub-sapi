@@ -30,14 +30,14 @@
 				<version>${mule.maven.plugin.version}</version>
 				<extensions>true</extensions>
 				<configuration>
-					<--
+					
 					<sharedLibraries>
 						<sharedLibrary>
 							<groupId>com.mycompany</groupId>
 							<artifactId>ojdbc6</artifactId>
 						</sharedLibrary>
 					</sharedLibraries>
-					-->
+					
 				</configuration>
 			</plugin>
 		</plugins>
